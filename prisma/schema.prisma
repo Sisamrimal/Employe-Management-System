@@ -1,0 +1,206 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Department {
+  id         Int                 @id @default(autoincrement())
+  name       String
+  location   String?
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  branches   BranchDepartment[]
+}
+
+model Branch {
+  id          Int                 @id @default(autoincrement())
+  name        String
+  location    String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  departments BranchDepartment[]
+}
+
+model BranchDepartment {
+  id           Int        @id @default(autoincrement())
+  branchId     Int
+  branch       Branch     @relation(fields: [branchId], references: [id])
+
+  departmentId Int
+  department   Department @relation(fields: [departmentId], references: [id])
+
+  employees    Employee[]
+
+  @@unique([branchId, departmentId])
+}
+
+model Employee {
+  id           Int              @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  email        String           @unique
+  originalEmail String?         // Added this to store original email
+  phone        String?
+  originalPhone String?         // Added this to store original phone
+  hireDate     DateTime         @default(now())
+  position     String
+  cvFile       String?
+
+    // New fields for UI
+  gender       String?          // e.g. "Male" | "Female" | "Other"
+  address      String?
+  status       String @default("Active") // Active, Inactive, On Leave
+
+  branchDeptId Int
+  branchDept   BranchDepartment @relation(fields: [branchDeptId], references: [id])
+
+  user         User?            // 1-1 relation with User
+  attendance  Attendance[]
+
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  deletedAt    DateTime?        //  this is  for soft delete
+
+  task Task[]
+  comment Comment[]
+
+  LeaveRequest LeaveRequest[]   @relation("EmployeeLeaveRequests")
+  approvedLeaveRequests LeaveRequest[] @relation("ApprovedLeaveRequests")
+  
+  projects ProjectEmployee[]
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  originalEmail String?   // Add this to store original email
+  password   String
+  role       String    @default("EMPLOYEE") // Changed from enum to string
+  employee   Employee? @relation(fields: [employeeId], references: [id])
+
+  employeeId Int?      @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  @@map("users")
+}
+
+model LeaveRequest {
+  id          Int      @id @default(autoincrement())
+  employeeId  Int
+  employee     Employee  @relation("EmployeeLeaveRequests", fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  startDate   DateTime
+  endDate     DateTime
+  reason      String
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  comments    String?
+  //new fields
+  leaveType   String   // Medical Leave, Maternity Leave, etc.
+  numberOfDays Int     // Number of days of the leave
+  durationType String  // Full-day or Half-day
+  approvedById Int?
+  approvedBy   Employee? @relation("ApprovedLeaveRequests", fields: [approvedById], references: [id], onDelete: NoAction, onUpdate: NoAction)    // Employee ID of the approver (Manager or HR)
+  approvalDate DateTime? // Date of approval
+  
+
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Attendance {
+  id          Int      @id @default(autoincrement())
+  employeeId  Int
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  date        DateTime
+  checkIn     DateTime
+  checkOut    DateTime?
+  hoursWorked Float?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([employeeId, date])
+}
+
+// Add to your existing schema.prisma
+model Project {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  clientName  String
+  startDate   DateTime
+  endDate     DateTime?
+  deadline    DateTime
+  priority    String    // HIGH, MEDIUM, LOW
+  status      String    @default("ACTIVE") // ACTIVE, DEACTIVE, COMPLETED
+  progress    Int       @default(0) // Progress percentage 0-100
+  image       String?   // For image upload
+  category    String?
+  
+  // Many-to-many relation with employees
+  projectEmployees ProjectEmployee[]
+  
+  // Tasks for the project
+  tasks       Task[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model ProjectEmployee {
+  id         Int      @id @default(autoincrement())
+  projectId  Int
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  employeeId Int
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  role       String   @default("MEMBER") // MEMBER, LEAD
+  
+  createdAt  DateTime @default(now())
+  
+  @@unique([projectId, employeeId])
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  status      String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED
+  priority    String   // HIGH, MEDIUM, LOW
+  dueDate     DateTime?
+  
+  projectId   Int
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  assignedTo  Int?
+  assignedEmployee Employee? @relation(fields: [assignedTo], references: [id])
+  
+  comments    Comment[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  taskId    Int
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employeeId Int
+  employee  Employee @relation(fields: [employeeId], references: [id])
+  
+  createdAt DateTime @default(now())
+}
