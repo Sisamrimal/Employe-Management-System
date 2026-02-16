@@ -162,7 +162,7 @@ export default function Sidebar({ className }: SidebarProps) {
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
             <Image 
-              src="/user.jpg" 
+              src="/uploads/user.jpg" 
               alt="Sarah Smith"
               width={40}
               height={40}
