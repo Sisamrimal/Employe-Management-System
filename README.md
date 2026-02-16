@@ -1,36 +1,138 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Employee Resource Management System (ERM)
 
-## Getting Started
+A web-based application designed to streamline employee administration, attendance tracking, and role management within an organization. Built using modern full-stack technologies with a secure and scalable architecture.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
+![Supabase](https://img.shields.io/badge/Supabase-Backend-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Vercel](https://img.shields.io/badge/Vercel-Deployed-black?style=for-the-badge&logo=vercel)
 
+---
+
+## 🌐 Live Application
+
+🔗 [Live Demo](https://employe-management-system-u97u-8z7yz2ist.vercel.app/login)
+
+---
+
+## 📌 About the Project
+
+The ERM system enables organizations to manage employee records efficiently with secure authentication and structured role-based permissions. 
+
+Each user interacts only with the features permitted by their assigned role, ensuring security and accountability.
+
+---
+
+## 🧰 Tech Stack
+
+### Frontend
+- Next.js 14 (App Router, Server Components)
+- TypeScript
+- Tailwind CSS
+
+### Backend
+- Next.js API Routes
+- Prisma ORM
+- JWT Authentication
+- Zod Validation
+
+### Database
+- Supabase (PostgreSQL)
+
+### Deployment
+- Vercel
+
+---
+
+## 🔐 Access Control Roles
+
+- **Admin** – Full system access, user and role management.
+- **HR** – Manage employees and attendance records.
+- **Employee** – View personal dashboard and mark attendance.
+
+---
+
+## ✨ Key Functionalities
+
+- Secure login and JWT-based authentication
+- Role-based route protection and middleware checks
+- Employee CRUD operations
+- Real-time attendance tracking
+- Input validation using Zod
+- Type-safe development using TypeScript
+
+---
+
+## ⚙️ Local Setup Instructions
+
+### Prerequisites
+- Node.js 18.x or higher
+- Supabase Database instance
+
+### Installation
+
+1. **Clone the repository**  
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/Sisamrimal/Employe-Management-System.git
+cd Employe-Management-System
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+3.  **Set up environment variables**
+  ```
+DATABASE_URL="your-supabase-connection-string"
+JWT_SECRET="your-jwt-secret"
+NEXTAUTH_SECRET="your-nextauth-secret"
+NEXTAUTH_URL="http://localhost:3000"
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4.  **Set up database**
+ ```bash
+    npx prisma generate
+    npx prisma db push
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+ ```
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5.  **Run development server**
+  ```bash
+    npm run dev
+```
+ Open `http://localhost:3000` to view the application.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    
+ ## 👥 Role-Based Access
+
+| Role | Access Level |
+| :--- | :--- |
+| 👑 **Admin** | Full system control and user management. |
+| 👥 **HR** | Employee data and attendance management. |
+| 💼 **Employee** | Personal dashboard and attendance marking. |
+
+---
+
+## 🔗 Links
+* **Live Demo**: [Vercel Deployment](https://employe-management-system-u97u-8z7yz2ist.vercel.app/login)
+* **GitHub Repository**: [Repository Link](https://github.com/Sisamrimal/Employe-Management-System)
+* **LinkedIn**: [Sisam Rimal](https://www.linkedin.com/in/sisamrimal)
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Please check the issues page for details on how to get involved.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+Built with ❤️ by Sisam Rimal
+
+Connect with me on [LinkedIn](https://www.linkedin.com/in/sisamrimal/)
